@@ -11,7 +11,7 @@ namespace GamesLibrary.Repositories
 
     public class IGDBRepository: IIGDBRepository
     {
-        public async Task<IEnumerable<GamesLibrary.Models.GameModel>> ReturnGamesAsync() {
+        public async Task<IEnumerable<GameModel>> ReturnGamesAsync() {
             List<GameModel> gamesList = new List<GameModel>();
             var igdb = new IGDBClient(
             // Found in Twitch Developer portal for your app

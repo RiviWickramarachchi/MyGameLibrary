@@ -8,6 +8,6 @@ namespace GamesLibrary.Repositories
 {
     public interface IIGDBRepository
     {
-        Task <IEnumerable<GamesLibrary.Models.GameModel>> ReturnGamesAsync();
+        Task <IEnumerable<GameModel>> ReturnGamesAsync();
     }
 }

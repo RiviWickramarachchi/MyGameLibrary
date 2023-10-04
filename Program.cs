@@ -1,6 +1,15 @@
+using GamesLibrary.Configs;
 using GamesLibrary.Repositories;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Making GUID and DateTime humanly readable
+BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -8,7 +17,14 @@ builder.Services.AddControllersWithViews();
     builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
 builder.Services.AddScoped<IIGDBRepository, IGDBRepository>();
-//services.AddScoped<IBloggerRepository, BloggerRepository>();
+builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+{
+    var settings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+    return new MongoClient(settings.ConnectionString);
+});
+builder.Services.AddSingleton<IUsersRepository, MongoUsersRepository>();
+
+
 var app = builder.Build();
 
 
