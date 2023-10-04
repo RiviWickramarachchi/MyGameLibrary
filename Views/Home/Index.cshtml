@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<GamesLibrary.Models.GameModel>
+@{
     ViewData["Title"] = "Home Page";
     //cliend secret - yel60ypsl1ua11af3kdiv8xsdijcwe
 }
@@ -6,5 +7,16 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    Hello
+</div>
+<div class="input-group mb-2">
+  <input type="text" class="form-control" placeholder="Search Game Name" aria-label="Game Name" aria-describedby="basic-addon2">
+  <div class="input-group-append">
+    <button type="button" class="btn btn-info">Search</button>
+  </div>
+</div>
+<div>
+  @foreach(var videoGame in Model)
+  {
+    <p>@videoGame.GameName</p>
+  }
 </div>

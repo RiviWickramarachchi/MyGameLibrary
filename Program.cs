@@ -1,3 +1,5 @@
+using GamesLibrary.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +7,8 @@ builder.Services.AddControllersWithViews();
 #if DEBUG
     builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
-
+builder.Services.AddScoped<IIGDBRepository, IGDBRepository>();
+//services.AddScoped<IBloggerRepository, BloggerRepository>();
 var app = builder.Build();
 
 

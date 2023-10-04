@@ -1,21 +1,26 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GamesLibrary.Models;
+using GamesLibrary.Repositories;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GamesLibrary.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly IIGDBRepository _igdbRepo;
+    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo)
     {
         _logger = logger;
+        _igdbRepo = igdbRepo;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        IEnumerable<GameModel> topGames = await _igdbRepo.ReturnGamesAsync();
+
+        return View(topGames);
     }
 
     public IActionResult Privacy()
