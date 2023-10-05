@@ -10,6 +10,12 @@ namespace GamesLibrary.Repositories
     {
         //Register User - Add the user to the database
         void CreateUser(UserModel user);
+
+        //Get User Info
+        UserModel GetUser(Guid id);
+
+        //Get All Users
+        IEnumerable<UserModel> GetUsers();
         //Get MyGames - Returns the Games in user Library
     }
 }

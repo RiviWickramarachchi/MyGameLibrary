@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GamesLibrary.DTOs
 {
-    public class CreateUserDTO
+    public record CreateUserDTO
     {
         [Required]
         public string? UserName { get; set; }

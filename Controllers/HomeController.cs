@@ -35,20 +35,40 @@ public class HomeController : Controller
 
         return View();
     }
-    /*
+
+    //GET all users
+    //Test Route
+    public IEnumerable<UserDTO> GetUsers() {
+        var users = _iuserRepo.GetUsers().Select(user => user.ReturnAsDTO());
+        return users;
+    }
+    //GET to items/{id}
+    //Action result lets the user return more than one type. Can be used to return the status code if the user is not found
+    //or an error occurs
+    public ActionResult<UserDTO> GetUser(Guid id) {
+        var user = _iuserRepo.GetUser(id);
+
+        if(user == null) {
+            return NotFound(); //returns a 404 error
+        }
+        return user.ReturnAsDTO();
+    }
+
     public ActionResult<UserDTO> CreateUser(CreateUserDTO userDTO) {
         UserModel user = new() {
             Id = Guid.NewGuid(),
             UserName = userDTO.UserName,
             Email = userDTO.Email,
-            EncryptedPassword = userDTO.Password,
+            //EncryptedPassword = userDTO.Password.GetHashCode(),
             CreatedDate = DateTimeOffset.UtcNow,
             Games = new List<GameModel>()
         };
 
         _iuserRepo.CreateUser(user);
+        return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
+
     }
-    */
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

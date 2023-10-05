@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GamesLibrary.DTOs
 {
-    public class UserDTO
+    public record UserDTO
     {
         public string? UserName {get; init;}
         public string? Email { get; init;}
