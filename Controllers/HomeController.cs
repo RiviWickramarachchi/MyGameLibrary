@@ -51,7 +51,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public ActionResult<string> Login([FromBody] LoginDTO loginVals) {
+    public ActionResult<string> Login([FromForm] LoginDTO loginVals) {
 
         string inputEmail = loginVals.Email;
         string inputPassword = loginVals.Password;
@@ -59,16 +59,17 @@ public class HomeController : Controller
         //Search for email in mongo Database and get user
         var user = _iuserRepo.SearchUserByEmail(inputEmail);
 
-        //Encrypt password
-        bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
-
         //Validate
         if(user != null) {
+            //Check input password with encrypted password value
+            bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
             if(verification)
-                return "Password matches";
+                return RedirectToAction("Index");
         }
-        return "Incorrect email or password";
-        //return View("Index");
+        //display password mismatch
+        ViewData["ErrorMessage"] = "Incorrect email or password. Please try again.";
+        return View();
+
     }
 
     //GET to items/{id}
