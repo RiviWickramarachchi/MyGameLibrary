@@ -17,6 +17,9 @@
 <div>
   @foreach(var videoGame in Model)
   {
-    <p>@videoGame.GameName</p>
+    <b>@videoGame.GameName</b>
+    <i>@videoGame.Rating</i>
+    <p>@videoGame.Description</p>
+    <a href="@videoGame.ImgUrl">@videoGame.ImgUrl</a>
   }
 </div>
