@@ -4,6 +4,7 @@ using GamesLibrary.Models;
 using GamesLibrary.Repositories;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using GamesLibrary.DTOs;
+using GamesLibrary.Security;
 
 namespace GamesLibrary.Controllers;
 
@@ -12,11 +13,13 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly IIGDBRepository _igdbRepo;
     private readonly IUsersRepository _iuserRepo;
-    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo)
+    private readonly IPasswordHasher _ipasshasher;
+    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo, IPasswordHasher ipasshasher)
     {
         _logger = logger;
         _igdbRepo = igdbRepo;
         _iuserRepo = iuserRepo;
+        _ipasshasher = ipasshasher;
     }
 
     public async Task<IActionResult> Index()
@@ -54,19 +57,22 @@ public class HomeController : Controller
         return user.ReturnAsDTO();
     }
 
-    public ActionResult<UserDTO> CreateUser(CreateUserDTO userDTO) {
+    [HttpPost]
+    public ActionResult CreateUser([FromForm] CreateUserDTO userDTO) {
         UserModel user = new() {
             Id = Guid.NewGuid(),
             UserName = userDTO.UserName,
             Email = userDTO.Email,
-            //EncryptedPassword = userDTO.Password.GetHashCode(),
+#nullable disable
+            EncryptedPassword = _ipasshasher.HashPassword(userDTO.Password),
+#nullable enable
             CreatedDate = DateTimeOffset.UtcNow,
             Games = new List<GameModel>()
         };
 
         _iuserRepo.CreateUser(user);
-        return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
-
+        //return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
+        return RedirectToAction("Index"); //Redirect to home page
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

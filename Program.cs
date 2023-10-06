@@ -1,5 +1,6 @@
 using GamesLibrary.Configs;
 using GamesLibrary.Repositories;
+using GamesLibrary.Security;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -24,6 +25,8 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 });
 builder.Services.AddSingleton<IUsersRepository, MongoUsersRepository>();
 
+//Password Hasher Interface and class
+builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();
 
 var app = builder.Build();
 

@@ -5,18 +5,29 @@ using System.Threading.Tasks;
 using GamesLibrary.Models;
 using IGDB;
 using IGDB.Models;
+using MongoDB.Driver;
 
 namespace GamesLibrary.Repositories
 {
 
     public class IGDBRepository: IIGDBRepository
     {
+        private readonly IConfiguration _config;
+
+        public IGDBRepository(IConfiguration config) {
+            _config = config;
+        }
         public async Task<IEnumerable<GameModel>> ReturnGamesAsync() {
-            List<GameModel> gamesList = new List<GameModel>();
+            // The generated Client id and Client Secret are saved in the secrets.json file
+            //These keys can be generated and seen in the Twitch Developer portal for your app
+            string igdb_client_id = _config["IGDB_CLIENT_ID"];
+            string igdb_client_id_secret = _config["IGDB_CLIENT_SECRET"];
+            List<GameModel> gamesList = new();
             var igdb = new IGDBClient(
-            // Found in Twitch Developer portal for your app
-            "b6p5bloljnrbsbrc4nwqbd8q6w6n91",
-            "yel60ypsl1ua11af3kdiv8xsdijcwe"
+
+            igdb_client_id,
+            igdb_client_id_secret
+
             );
 
             var games = await igdb.QueryAsync<Game>(
@@ -32,5 +43,7 @@ namespace GamesLibrary.Repositories
             }
             return gamesList;
         }
+
+        
     }
 }
