@@ -40,7 +40,7 @@ namespace GamesLibrary.Repositories
                 if(topgame.Artworks != null)
                 {
                     var artworkImageId = topgame.Artworks.Values.First().ImageId;
-                    string imgUrl = ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.CoverBig, retina: false);
+                    string imgUrl = ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.HD720, retina: false);
                     GameModel game = new() {
                         GameID = topgame.Id.ToString(),
                         GameName = topgame.Name,
