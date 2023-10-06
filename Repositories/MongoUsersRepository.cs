@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GamesLibrary.DTOs;
 using GamesLibrary.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -34,6 +35,12 @@ namespace GamesLibrary.Repositories
         public IEnumerable<UserModel> GetUsers()
         {
             return usersCollection.Find(new BsonDocument()).ToList();
+        }
+
+        public UserModel SearchUserByEmail(string email)
+        {
+            var filter = filterBuilder.Eq(user=> user.Email, email);
+            return usersCollection.Find(filter).SingleOrDefault();
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GamesLibrary.DTOs;
 using GamesLibrary.Models;
 
 namespace GamesLibrary.Repositories
@@ -16,6 +17,10 @@ namespace GamesLibrary.Repositories
 
         //Get All Users
         IEnumerable<UserModel> GetUsers();
+
         //Get MyGames - Returns the Games in user Library
+
+        //Get User by email
+        UserModel SearchUserByEmail(string email);
     }
 }

@@ -8,5 +8,6 @@ namespace GamesLibrary.Security
     public interface IPasswordHasher
     {
         public string HashPassword(string password);
+        public bool Verify(string encryptedPassword, string passwordInput);
     }
 }

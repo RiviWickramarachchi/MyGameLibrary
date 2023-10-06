@@ -45,6 +45,32 @@ public class HomeController : Controller
         var users = _iuserRepo.GetUsers().Select(user => user.ReturnAsDTO());
         return users;
     }
+
+    public IActionResult Login() {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult<string> Login([FromBody] LoginDTO loginVals) {
+
+        string inputEmail = loginVals.Email;
+        string inputPassword = loginVals.Password;
+        //Make a post request to send email and password
+        //Search for email in mongo Database and get user
+        var user = _iuserRepo.SearchUserByEmail(inputEmail);
+
+        //Encrypt password
+        bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
+
+        //Validate
+        if(user != null) {
+            if(verification)
+                return "Password matches";
+        }
+        return "Incorrect email or password";
+        //return View("Index");
+    }
+
     //GET to items/{id}
     //Action result lets the user return more than one type. Can be used to return the status code if the user is not found
     //or an error occurs
