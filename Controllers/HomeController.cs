@@ -86,20 +86,33 @@ public class HomeController : Controller
 
     [HttpPost]
     public ActionResult CreateUser([FromForm] CreateUserDTO userDTO) {
-        UserModel user = new() {
-            Id = Guid.NewGuid(),
-            UserName = userDTO.UserName,
-            Email = userDTO.Email,
+        //search for the email address
+        //if theres already a user with the same email address, display error message
+        if(userDTO.Email != null)
+        {
+            var existingUser = _iuserRepo.SearchUserByEmail(userDTO.Email);
+            if(existingUser == null)
+            {
+                //email is not used to register an account
+                UserModel user = new() {
+                    Id = Guid.NewGuid(),
+                    UserName = userDTO.UserName,
+                    Email = userDTO.Email,
 #nullable disable
-            EncryptedPassword = _ipasshasher.HashPassword(userDTO.Password),
+                    EncryptedPassword = _ipasshasher.HashPassword(userDTO.Password),
 #nullable enable
-            CreatedDate = DateTimeOffset.UtcNow,
-            Games = new List<GameModel>()
-        };
+                    CreatedDate = DateTimeOffset.UtcNow,
+                    Games = new List<GameModel>()
+                };
 
-        _iuserRepo.CreateUser(user);
-        //return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
-        return RedirectToAction("Index"); //Redirect to home page
+                _iuserRepo.CreateUser(user);
+                //return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
+                return RedirectToAction("Index"); //Redirect to home page
+            }
+        }
+        ViewData["ErrorMessage"] = "A user with this email address already exist.";
+        return View("Register");
+
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
