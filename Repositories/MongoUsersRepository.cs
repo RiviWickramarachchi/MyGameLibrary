@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GamesLibrary.DTOs;
 using GamesLibrary.Models;
+using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 

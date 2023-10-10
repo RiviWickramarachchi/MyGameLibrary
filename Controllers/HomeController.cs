@@ -24,8 +24,13 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var userEmail = TempData["UserEmail"];
+        if(userEmail != null)
+        {
+            var user = _iuserRepo.SearchUserByEmail(userEmail.ToString());
+            ViewData["User"] = user;
+        }
         IEnumerable<GameModel> topGames = await _igdbRepo.ReturnGamesAsync();
-
         return View(topGames);
     }
 
@@ -64,7 +69,10 @@ public class HomeController : Controller
             //Check input password with encrypted password value
             bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
             if(verification)
+            {
+                TempData["UserEmail"] = user.Email;
                 return RedirectToAction("Index");
+            }
         }
         //display password mismatch
         ViewData["ErrorMessage"] = "Incorrect email or password. Please try again.";
@@ -106,6 +114,8 @@ public class HomeController : Controller
                 };
 
                 _iuserRepo.CreateUser(user);
+                //ViewData["User"] = user;
+               // ViewData["UserName"] = user.UserName;
                 //return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
                 return RedirectToAction("Index"); //Redirect to home page
             }

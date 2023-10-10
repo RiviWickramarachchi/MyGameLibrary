@@ -28,10 +28,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">My Games</a>
                         </li>
-                        <form class="form-inline">
-                            <button  type="submit" class="btn btn-outline-success" asp-area="" asp-controller="Home" asp-action="Register">Register</button>
-                            <button type="submit" class="btn btn-outline-dark" asp-controller="Home" asp-action="Login">Login</button>
-                        </form>
+                        <partial name="_LoginInfo" />
                     </ul>
                 </div>
             </div>
