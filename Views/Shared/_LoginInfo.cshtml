@@ -2,7 +2,7 @@
 @if(ViewData["User"] != null)
 {
     var user = ViewData["User"] as UserModel;
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown ml-auto">
         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             @user.UserName
         </a>
@@ -16,9 +16,9 @@
 }
 else
 {
-    <form class="form-inline">
-        <button  type="submit" class="btn btn-outline-success" asp-area="" asp-controller="Home" asp-action="Register">Register</button>
-        <button type="submit" class="btn btn-outline-dark" asp-controller="Home" asp-action="Login">Login</button>
+    <form class="form-inline my-2 my-lg-0">
+        <button  type="submit" class="btn btn-outline-success" asp-controller="Home" asp-action="Register">Register</button>
+        <button type="submit" class="btn btn-outline-dark my-2 my-sm-0 ml-auto" asp-controller="Home" asp-action="Login">Login</button>
     </form>
 }
 

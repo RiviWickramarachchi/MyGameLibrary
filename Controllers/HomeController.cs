@@ -32,7 +32,22 @@ public class HomeController : Controller
         }
         IEnumerable<GameModel> topGames = await _igdbRepo.ReturnGamesAsync();
         return View(topGames);
+
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Index([FromForm]string gameName) {
+        if(gameName != null)
+        {
+            GameModel game = await _igdbRepo.SearchForGameAsync(gameName);
+            ViewData["Game"] = game;
+            return View();
+        }
+        else {
+            return RedirectToAction("Index");
+        }
+    }
+
 
     public IActionResult Privacy()
     {
@@ -70,7 +85,7 @@ public class HomeController : Controller
             bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
             if(verification)
             {
-                TempData["UserEmail"] = user.Email;
+                TempData["UserEmail"] = user.Email; //Itd be more efficient to use the user ID for this check
                 return RedirectToAction("Index");
             }
         }
@@ -114,9 +129,7 @@ public class HomeController : Controller
                 };
 
                 _iuserRepo.CreateUser(user);
-                //ViewData["User"] = user;
-               // ViewData["UserName"] = user.UserName;
-                //return CreatedAtAction(nameof(GetUser), new{id = user.Id,}, user.ReturnAsDTO());
+                TempData["UserEmail"] = user.Email; //Itd be more efficient to use the user ID for this check
                 return RedirectToAction("Index"); //Redirect to home page
             }
         }

@@ -9,5 +9,6 @@ namespace GamesLibrary.Repositories
     public interface IIGDBRepository
     {
         Task <IEnumerable<GameModel>> ReturnGamesAsync();
+        Task <GameModel> SearchForGameAsync(string name);
     }
 }

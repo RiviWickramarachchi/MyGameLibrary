@@ -2,14 +2,14 @@ namespace GamesLibrary.Models;
 
 public class GameModel
 {
-    public string? GameID{ get; init; }
+    public string? GameID{ get; set; }
 
-    public string? GameName {get; init;}
+    public string? GameName {get; set;}
 
-    public double? Rating {get; init;}
+    public double? Rating {get; set;}
 
-    public string? Description {get; init;}
+    public string? Description {get; set;}
 
-    public string? ImgUrl {get; init;}
+    public string? ImgUrl {get; set;}
 
 }

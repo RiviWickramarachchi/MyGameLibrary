@@ -60,5 +60,38 @@ namespace GamesLibrary.Repositories
             return gamesList;
         }
 
+        public async Task<GameModel> SearchForGameAsync(String name) {
+            string gameName = name;
+            gameName = gameName.Replace("'", "''"); // Escape special characters in the game name (e.g., single quotes)
+            string igdb_client_id = _config["IGDB_CLIENT_ID"];
+            string igdb_client_id_secret = _config["IGDB_CLIENT_SECRET"];
+
+            // Create an empty Game model to return
+            GameModel gameModel = new();
+            var igdb = new IGDBClient(
+
+            igdb_client_id,
+            igdb_client_id_secret
+
+            );
+
+            string query = $"fields id,name,rating,summary, artworks.image_id; where name ~ *\"{gameName}\"*;";
+
+            var games = await igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, query);
+            var game = games.FirstOrDefault();
+            if(game != null) {
+                if(game.Artworks != null) {
+                    var artworkImageId = game.Artworks.Values.First().ImageId;
+                    string imgUrl = ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.HD720, retina: false);
+                    gameModel.ImgUrl = imgUrl;
+                }
+
+                gameModel.GameID = game.Id.ToString();
+                gameModel.GameName = game.Name;
+                gameModel.Description = game.Summary;
+                gameModel.Rating = game.Rating;
+            }
+        return gameModel;
+        }
     }
 }
