@@ -17,10 +17,16 @@
 </form>
 @if(ViewData["Game"] != null) {
   var game = ViewData["Game"] as GameModel;
-  <div>
-     <p> @game.GameName </p>
-     <p> @game.Description </p>
-     <p> @game.Rating </p>
+  <div class="carousel-item active">
+      <img src="@game.ImgUrl" class="d-block w-100" alt="Game Poster"/>
+      <div class="carousel-caption d-none d-md-block carousel-description">
+        <p> @game.GameName </p>
+        <p> @game.Description </p>
+        <p> @game.Rating </p>
+        <form class="form-inline my-2 my-lg-0">
+          <button  type="submit" class="btn btn-warning" asp-controller="Home" asp-action="Register">Add</button>
+        </form>
+      </div>
   </div>
 }
 else {
@@ -38,7 +44,7 @@ else {
                 <!-- Single item -->
                 <div class="carousel-item active">
                   <img src="@videoGame.ImgUrl" class="d-block w-100" alt="Sunset Over the City"/>
-                  <div class="carousel-caption d-none d-md-block">
+                  <div class="carousel-caption d-none d-md-block carousel-description">
                     <h5>@videoGame.GameName</h5>
                     <p>@videoGame.Description</p>
                   </div>
@@ -47,7 +53,7 @@ else {
               <!-- Single item -->
               <div class="carousel-item">
                 <img src="@videoGame.ImgUrl" class="d-block w-100" alt="Sunset Over the City"/>
-                <div class="carousel-caption d-none d-md-block">
+                <div class="carousel-caption d-none d-md-block carousel-description">
                     <h5>@videoGame.GameName</h5>
                     <p>@videoGame.Description</p>
                   </div>

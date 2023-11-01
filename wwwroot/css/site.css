@@ -16,3 +16,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.carousel-description {
+  background-color: rgba(0, 0, 0, 0.7); /* Dark background with 70% opacity */
+  color: white; /* Text color on the dark background */
+  padding: 10px; /* Add padding for better spacing */
+}
+
+.carousel-description p {
+  margin: 0; /* Remove default margin for <p> elements */
+}

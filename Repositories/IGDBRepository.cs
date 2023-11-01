@@ -76,7 +76,7 @@ namespace GamesLibrary.Repositories
             );
 
             string query = $"fields id,name,rating,summary, artworks.image_id; where name ~ *\"{gameName}\"*;";
-
+            string defaultImgUrl = "/Images/Covers/placeholder.jpg";
             var games = await igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, query);
             var game = games.FirstOrDefault();
             if(game != null) {
@@ -84,6 +84,9 @@ namespace GamesLibrary.Repositories
                     var artworkImageId = game.Artworks.Values.First().ImageId;
                     string imgUrl = ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.HD720, retina: false);
                     gameModel.ImgUrl = imgUrl;
+                }
+                else{
+                    gameModel.ImgUrl = defaultImgUrl;
                 }
 
                 gameModel.GameID = game.Id.ToString();
