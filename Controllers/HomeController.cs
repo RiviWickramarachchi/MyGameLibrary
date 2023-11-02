@@ -5,6 +5,7 @@ using GamesLibrary.Repositories;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using GamesLibrary.DTOs;
 using GamesLibrary.Security;
+using Microsoft.AspNetCore.Identity;
 
 namespace GamesLibrary.Controllers;
 
@@ -13,23 +14,16 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly IIGDBRepository _igdbRepo;
     private readonly IUsersRepository _iuserRepo;
-    private readonly IPasswordHasher _ipasshasher;
-    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo, IPasswordHasher ipasshasher)
+
+    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo)
     {
         _logger = logger;
         _igdbRepo = igdbRepo;
         _iuserRepo = iuserRepo;
-        _ipasshasher = ipasshasher;
     }
 
     public async Task<IActionResult> Index()
     {
-        var userEmail = TempData["UserEmail"];
-        if(userEmail != null)
-        {
-            var user = _iuserRepo.SearchUserByEmail(userEmail.ToString());
-            ViewData["User"] = user;
-        }
         IEnumerable<GameModel> topGames = await _igdbRepo.ReturnGamesAsync();
         return View(topGames);
 
@@ -54,11 +48,6 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Register() {
-
-        return View();
-    }
-
     //GET all users
     //Test Route
     public IEnumerable<UserDTO> GetUsers() {
@@ -66,34 +55,6 @@ public class HomeController : Controller
         return users;
     }
 
-    public IActionResult Login() {
-        return View();
-    }
-
-    [HttpPost]
-    public ActionResult<string> Login([FromForm] LoginDTO loginVals) {
-
-        string inputEmail = loginVals.Email;
-        string inputPassword = loginVals.Password;
-        //Make a post request to send email and password
-        //Search for email in mongo Database and get user
-        var user = _iuserRepo.SearchUserByEmail(inputEmail);
-
-        //Validate
-        if(user != null) {
-            //Check input password with encrypted password value
-            bool verification = _ipasshasher.Verify(user.EncryptedPassword,inputPassword);
-            if(verification)
-            {
-                TempData["UserEmail"] = user.Email; //Itd be more efficient to use the user ID for this check
-                return RedirectToAction("Index");
-            }
-        }
-        //display password mismatch
-        ViewData["ErrorMessage"] = "Incorrect email or password. Please try again.";
-        return View();
-
-    }
 
     //GET to items/{id}
     //Action result lets the user return more than one type. Can be used to return the status code if the user is not found
@@ -107,35 +68,12 @@ public class HomeController : Controller
         return user.ReturnAsDTO();
     }
 
-    [HttpPost]
-    public ActionResult CreateUser([FromForm] CreateUserDTO userDTO) {
-        //search for the email address
-        //if theres already a user with the same email address, display error message
-        if(userDTO.Email != null)
-        {
-            var existingUser = _iuserRepo.SearchUserByEmail(userDTO.Email);
-            if(existingUser == null)
-            {
-                //email is not used to register an account
-                UserModel user = new() {
-                    Id = Guid.NewGuid(),
-                    UserName = userDTO.UserName,
-                    Email = userDTO.Email,
-#nullable disable
-                    EncryptedPassword = _ipasshasher.HashPassword(userDTO.Password),
-#nullable enable
-                    CreatedDate = DateTimeOffset.UtcNow,
-                    Games = new List<GameModel>()
-                };
-
-                _iuserRepo.CreateUser(user);
-                TempData["UserEmail"] = user.Email; //Itd be more efficient to use the user ID for this check
-                return RedirectToAction("Index"); //Redirect to home page
-            }
-        }
-        ViewData["ErrorMessage"] = "A user with this email address already exist.";
-        return View("Register");
-
+    public ActionResult AddGame()
+    {
+        //check if the user is logged in
+        //if logged in add the game to games list
+        //else redirect to login page
+        return View("Login");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

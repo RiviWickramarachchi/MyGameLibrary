@@ -1,10 +1,9 @@
-
-@if(ViewData["User"] != null)
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+@if(_signInManager.IsSignedIn(User))
 {
-    var user = ViewData["User"] as UserModel;
     <li class="nav-item dropdown ml-auto">
         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            @user.UserName
+            @User.Identity.Name
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" asp-action="Logout" asp-controller="Account">Logout</a>
@@ -17,8 +16,8 @@
 else
 {
     <form class="form-inline my-2 my-lg-0">
-        <button  type="submit" class="btn btn-outline-success" asp-controller="Home" asp-action="Register">Register</button>
-        <button type="submit" class="btn btn-outline-dark my-2 my-sm-0 ml-auto" asp-controller="Home" asp-action="Login">Login</button>
+        <button  type="submit" class="btn btn-outline-success" asp-controller="UserAccount" asp-action="Register">Register</button>
+        <button type="submit" class="btn btn-outline-dark my-2 my-sm-0 ml-auto" asp-controller="UserAccount" asp-action="Login">Login</button>
     </form>
 }
 

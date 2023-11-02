@@ -93,7 +93,7 @@ namespace GamesLibrary.Repositories
                 gameModel.GameName = game.Name;
                 gameModel.Description = game.Summary;
                 gameModel.Rating = game.Rating;
-            }
+            } //else gameModel = null
         return gameModel;
         }
     }
