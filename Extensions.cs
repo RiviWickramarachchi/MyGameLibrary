@@ -13,7 +13,6 @@ namespace GamesLibrary
             return new UserDTO() {
                 UserName = user.UserName,
                 Email = user.Email,
-                Password = user.EncryptedPassword,
                 Games = user.Games
             };
         }

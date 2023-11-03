@@ -22,6 +22,12 @@ namespace GamesLibrary.Repositories
             usersCollection = database.GetCollection<UserModel>(collectionName);
         }
 
+        public void AddGameToList(UserModel user)
+        {
+            var filter = filterBuilder.Eq(existingUser => existingUser.Id,user.Id);
+            usersCollection?.ReplaceOne(filter,user);
+        }
+
         public void CreateUser(UserModel user)
         {
             usersCollection?.InsertOne(user);
@@ -43,5 +49,7 @@ namespace GamesLibrary.Repositories
             var filter = filterBuilder.Eq(user=> user.Email, email);
             return usersCollection.Find(filter).SingleOrDefault();
         }
+
+        
     }
 }

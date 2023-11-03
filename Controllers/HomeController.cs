@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using GamesLibrary.DTOs;
 using GamesLibrary.Security;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace GamesLibrary.Controllers;
 
@@ -14,12 +15,14 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly IIGDBRepository _igdbRepo;
     private readonly IUsersRepository _iuserRepo;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo)
+    public HomeController(ILogger<HomeController> logger, IIGDBRepository igdbRepo, IUsersRepository iuserRepo, SignInManager<ApplicationUser> signInManager)
     {
         _logger = logger;
         _igdbRepo = igdbRepo;
         _iuserRepo = iuserRepo;
+        _signInManager = signInManager;
     }
 
     public async Task<IActionResult> Index()
@@ -68,12 +71,43 @@ public class HomeController : Controller
         return user.ReturnAsDTO();
     }
 
-    public ActionResult AddGame()
+    public ActionResult AddGame(string gameId, string gameName, string rating, string description, string imageUrl)
     {
         //check if the user is logged in
+        if(_signInManager.IsSignedIn(User))
+        {
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+            if(userEmail != null)
+            {
+                UserModel user = _iuserRepo.SearchUserByEmail(userEmail);
+                double gameRating = Convert.ToDouble(rating);
+                GameModel gameModel = new() {
+                    GameID = gameId,
+                    GameName = gameName,
+                    Description = description,
+                    Rating = gameRating,
+                    ImgUrl = imageUrl
+                };
+                foreach(GameModel game in user.Games)
+                {
+                    if(game.GameID == gameModel.GameID)
+                    {
+                        //notify that the game is already added
+                        TempData["ErrorMessage"] = "The game already exists in your list.";
+                        return RedirectToAction("Index");
+                    }
+                }
+                user.Games.Add(gameModel);
+                _iuserRepo.AddGameToList(user);
+            }
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return View("Login");
+        }
         //if logged in add the game to games list
         //else redirect to login page
-        return View("Login");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

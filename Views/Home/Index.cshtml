@@ -15,6 +15,17 @@
       </div>
   </div>
 </form>
+@if (TempData["ErrorMessage"] != null)
+{
+  if(TempData.ContainsKey("ErrorMessage"))
+  {
+    <script>
+        // JavaScript code to display a popup or alert
+        alert('@TempData["ErrorMessage"]');
+    </script>
+  }
+}
+
 @if(ViewData["Game"] != null) {
   var game = ViewData["Game"] as GameModel;
   <div class="carousel-item active">
@@ -23,8 +34,13 @@
         <p> @game.GameName </p>
         <p> @game.Description </p>
         <p> @game.Rating </p>
-        <form class="form-inline my-2 my-lg-0">
-          <button  type="submit" class="btn btn-warning" asp-controller="UserAccount" asp-action="Register">Add</button>
+        <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="AddGame">
+           <input type="hidden" name="gameId" value="@game.GameID" />
+           <input type="hidden" name="gameName" value="@game.GameName" />
+           <input type="hidden" name="description" value="@game.Description" />
+           <input type="hidden" name="rating" value="@game.Rating" />
+           <input type="hidden" name="imageUrl" value="@game.ImgUrl" />
+           <button  type="submit" class="btn btn-warning">Add</button>
         </form>
       </div>
   </div>

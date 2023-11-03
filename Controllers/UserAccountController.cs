@@ -19,15 +19,14 @@ namespace GamesLibrary.Controllers
         private readonly IUsersRepository _iuserRepo;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IPasswordHasher _ipasshasher;
 
 
-        public UserAccountController(ILogger<UserAccountController> logger, IPasswordHasher ipassHasher,IUsersRepository iuserRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+
+        public UserAccountController(ILogger<UserAccountController> logger, IUsersRepository iuserRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _iuserRepo = iuserRepo;
             _userManager = userManager;
-            _ipasshasher = ipassHasher;
             _signInManager = signInManager;
         }
 
@@ -85,15 +84,12 @@ namespace GamesLibrary.Controllers
                         Id = Guid.NewGuid(),
                         UserName = userDTO.UserName,
                         Email = userDTO.Email,
-#nullable disable
-                        EncryptedPassword = _ipasshasher.HashPassword(userDTO.Password),
-#nullable enable
-                            CreatedDate = DateTimeOffset.UtcNow,
-                            Games = new List<GameModel>()
+                        CreatedDate = DateTimeOffset.UtcNow,
+                        Games = new List<GameModel>()
                         };
 
-                    _iuserRepo.CreateUser(user);
-                    return RedirectToAction("Index","Home",appUser); //Redirect to home page
+                        _iuserRepo.CreateUser(user);
+                        return RedirectToAction("Index","Home"); //Redirect to home page
                     }
                     else
                     {

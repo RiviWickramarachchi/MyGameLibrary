@@ -22,5 +22,8 @@ namespace GamesLibrary.Repositories
 
         //Get User by email
         UserModel SearchUserByEmail(string email);
+
+        //add game to list
+        void AddGameToList(UserModel user);
     }
 }
