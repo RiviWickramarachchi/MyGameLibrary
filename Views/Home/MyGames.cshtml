@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "My Games";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>All the games that you have played can are displayed here.</p>
+@if(ViewData["GamesListNullMsg"] == null)
+{
+    <div class="container">
+        <div class="row">
+        @foreach (var listGame in Model)
+        {
+            <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@listGame.ImgUrl">
+                        <div class="card-body">
+                            <h5 class="card-title">@listGame.GameName</h5>
+                            <p class="card-text">@listGame.Rating</p>
+                            <a href="#" class="btn btn-primary">See More</a>
+                        </div>
+                    </div>
+                </div>
+        }
+        </div>
+    </div>
+}
+else
+{
+    var message = ViewData["GamesListNullMsg"];
+    <p>@message </p>
+}
+
+
+

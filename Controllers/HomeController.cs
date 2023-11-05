@@ -51,6 +51,32 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult MyGames()
+    {
+        if(_signInManager.IsSignedIn(User))
+        {
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+            if(userEmail != null)
+            {
+                UserModel user = _iuserRepo.SearchUserByEmail(userEmail);
+                IEnumerable<GameModel> gamesList = user.Games;
+                if(gamesList != null)
+                {
+                    return View(gamesList);
+                }
+                else
+                {
+                    ViewData["GamesListNullMsg"] = "You havent added any games to your library yet.";
+                }
+            }
+            return View();
+        }
+        else
+        {
+            return RedirectToAction("Login","UserAccount");
+        }
+    }
+
     //GET all users
     //Test Route
     public IEnumerable<UserDTO> GetUsers() {
@@ -104,7 +130,7 @@ public class HomeController : Controller
         }
         else
         {
-            return View("Login");
+            return RedirectToAction("Login","UserAccount");
         }
         //if logged in add the game to games list
         //else redirect to login page
