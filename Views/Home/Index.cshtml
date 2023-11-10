@@ -34,7 +34,7 @@
         <p> @game.GameName </p>
         <p> @game.Description </p>
         <p> @game.Rating </p>
-        <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="AddGame">
+        <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="AddGameAsync">
            <input type="hidden" name="gameId" value="@game.GameID" />
            <input type="hidden" name="gameName" value="@game.GameName" />
            <input type="hidden" name="description" value="@game.Description" />

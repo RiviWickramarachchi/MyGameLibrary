@@ -71,7 +71,7 @@ namespace GamesLibrary.Controllers
         //if theres already a user with the same email address, display error message
         if(userDTO.Email != null)
         {
-            var existingUser = _iuserRepo.SearchUserByEmail(userDTO.Email);
+            var existingUser = _iuserRepo.SearchUserByEmailAsync(userDTO.Email);
             if(existingUser == null)
             {
                 if(ModelState.IsValid)
@@ -95,7 +95,7 @@ namespace GamesLibrary.Controllers
                         Games = new List<GameModel>()
                         };
 
-                        _iuserRepo.CreateUser(user);
+                        _iuserRepo.CreateUserAsync(user);
                         return RedirectToAction("Index","Home"); //Redirect to home page
                     }
                     else

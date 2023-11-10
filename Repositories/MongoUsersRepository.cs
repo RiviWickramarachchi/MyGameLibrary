@@ -22,34 +22,33 @@ namespace GamesLibrary.Repositories
             usersCollection = database.GetCollection<UserModel>(collectionName);
         }
 
-        public void AddGameToList(UserModel user)
+        public async Task AddGameToListAsync(UserModel user)
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id,user.Id);
-            usersCollection?.ReplaceOne(filter,user);
+            await usersCollection?.ReplaceOneAsync(filter, user);
         }
 
-        public void CreateUser(UserModel user)
+        public async Task CreateUserAsync(UserModel user)
         {
-            usersCollection?.InsertOne(user);
+            await usersCollection?.InsertOneAsync(user);
         }
 
-        public UserModel GetUser(Guid id)
+        public async Task<UserModel> GetUserAsync(Guid id)
         {
             var filter = filterBuilder.Eq(user => user.Id, id);
-            return usersCollection.Find(filter).SingleOrDefault();
+            return await usersCollection.Find(filter).SingleOrDefaultAsync();
         }
 
-        public IEnumerable<UserModel> GetUsers()
+        public async Task<IEnumerable<UserModel>> GetUsersAsync()
         {
-            return usersCollection.Find(new BsonDocument()).ToList();
+            return await usersCollection.Find(new BsonDocument()).ToListAsync();
         }
 
-        public UserModel SearchUserByEmail(string email)
+        public async Task<UserModel> SearchUserByEmailAsync(string email)
         {
             var filter = filterBuilder.Eq(user=> user.Email, email);
-            return usersCollection.Find(filter).SingleOrDefault();
+            return await usersCollection.Find(filter).SingleOrDefaultAsync();
         }
 
-        
     }
 }

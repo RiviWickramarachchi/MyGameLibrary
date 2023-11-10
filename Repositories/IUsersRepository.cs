@@ -10,20 +10,21 @@ namespace GamesLibrary.Repositories
     public interface IUsersRepository
     {
         //Register User - Add the user to the database
-        void CreateUser(UserModel user);
+        Task CreateUserAsync(UserModel user);
+
+         //add game to list
+        Task AddGameToListAsync(UserModel user);
 
         //Get User Info
-        UserModel GetUser(Guid id);
+        Task<UserModel> GetUserAsync(Guid id);
 
         //Get All Users
-        IEnumerable<UserModel> GetUsers();
+        Task<IEnumerable<UserModel>> GetUsersAsync();
 
         //Get MyGames - Returns the Games in user Library
 
         //Get User by email
-        UserModel SearchUserByEmail(string email);
+        Task<UserModel> SearchUserByEmailAsync(string email);
 
-        //add game to list
-        void AddGameToList(UserModel user);
     }
 }

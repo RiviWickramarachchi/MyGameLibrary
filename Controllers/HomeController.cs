@@ -51,14 +51,14 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult MyGames()
+    public async Task<IActionResult> MyGames()
     {
         if(_signInManager.IsSignedIn(User))
         {
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             if(userEmail != null)
             {
-                UserModel user = _iuserRepo.SearchUserByEmail(userEmail);
+                UserModel user = await _iuserRepo.SearchUserByEmailAsync(userEmail);
                 IEnumerable<GameModel> gamesList = user.Games;
                 if(gamesList != null)
                 {
@@ -79,17 +79,17 @@ public class HomeController : Controller
 
     //GET all users
     //Test Route
-    public IEnumerable<UserDTO> GetUsers() {
-        var users = _iuserRepo.GetUsers().Select(user => user.ReturnAsDTO());
-        return users;
+    public async Task<IEnumerable<UserDTO>> GetUsersAsync() {
+        var users = await _iuserRepo.GetUsersAsync();
+        return users.Select(user => user.ReturnAsDTO());;
     }
 
 
     //GET to items/{id}
     //Action result lets the user return more than one type. Can be used to return the status code if the user is not found
     //or an error occurs
-    public ActionResult<UserDTO> GetUser(Guid id) {
-        var user = _iuserRepo.GetUser(id);
+    public async Task<ActionResult<UserDTO>> GetUserAsync(Guid id) {
+        var user = await _iuserRepo.GetUserAsync(id);
 
         if(user == null) {
             return NotFound(); //returns a 404 error
@@ -97,7 +97,7 @@ public class HomeController : Controller
         return user.ReturnAsDTO();
     }
 
-    public ActionResult AddGame(string gameId, string gameName, string rating, string description, string imageUrl)
+    public async Task<ActionResult> AddGameAsync(string gameId, string gameName, string rating, string description, string imageUrl)
     {
         //check if the user is logged in
         if(_signInManager.IsSignedIn(User))
@@ -105,7 +105,7 @@ public class HomeController : Controller
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             if(userEmail != null)
             {
-                UserModel user = _iuserRepo.SearchUserByEmail(userEmail);
+                UserModel user = await _iuserRepo.SearchUserByEmailAsync(userEmail);
                 double gameRating = Convert.ToDouble(rating);
                 GameModel gameModel = new() {
                     GameID = gameId,
@@ -124,7 +124,7 @@ public class HomeController : Controller
                     }
                 }
                 user.Games.Add(gameModel);
-                _iuserRepo.AddGameToList(user);
+                await _iuserRepo.AddGameToListAsync(user);
             }
             return RedirectToAction("Index");
         }
