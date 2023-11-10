@@ -71,7 +71,7 @@ namespace GamesLibrary.Controllers
         //if theres already a user with the same email address, display error message
         if(userDTO.Email != null)
         {
-            var existingUser = _iuserRepo.SearchUserByEmailAsync(userDTO.Email);
+            var existingUser = await _iuserRepo.SearchUserByEmailAsync(userDTO.Email);
             if(existingUser == null)
             {
                 if(ModelState.IsValid)
@@ -95,7 +95,7 @@ namespace GamesLibrary.Controllers
                         Games = new List<GameModel>()
                         };
 
-                        _iuserRepo.CreateUserAsync(user);
+                        await _iuserRepo.CreateUserAsync(user);
                         return RedirectToAction("Index","Home"); //Redirect to home page
                     }
                     else
@@ -116,6 +116,10 @@ namespace GamesLibrary.Controllers
                             if(error.Code == "PasswordRequiresNonAlphanumeric")
                             {
                                 errorMsg += " Password Requires Alphanumeric characters.";
+                            }
+                            if(error.Code == "DuplicateUserName")
+                            {
+                                errorMsg += "The username you entered already exist";
                             }
                         }
                         ViewData["ErrorMessage"] = errorMsg;

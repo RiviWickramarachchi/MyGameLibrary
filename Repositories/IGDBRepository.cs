@@ -60,14 +60,14 @@ namespace GamesLibrary.Repositories
             return gamesList;
         }
 
-        public async Task<GameModel> SearchForGameAsync(String name) {
+        public async Task<IEnumerable<GameModel>> SearchForGameAsync(String name) {
             string gameName = name;
             gameName = gameName.Replace("'", "''"); // Escape special characters in the game name (e.g., single quotes)
             string igdb_client_id = _config["IGDB_CLIENT_ID"];
             string igdb_client_id_secret = _config["IGDB_CLIENT_SECRET"];
 
             // Create an empty Game model to return
-            GameModel gameModel = new();
+            List<GameModel> gamesList = new ();
             var igdb = new IGDBClient(
 
             igdb_client_id,
@@ -76,25 +76,25 @@ namespace GamesLibrary.Repositories
             );
 
             string query = $"fields id,name,rating,summary, artworks.image_id; where name ~ *\"{gameName}\"*;";
-            string defaultImgUrl = "/Images/Covers/placeholder.jpg";
+            //string defaultImgUrl = "/Images/Covers/placeholder.jpg";
             var games = await igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, query);
-            var game = games.FirstOrDefault();
-            if(game != null) {
+            //var game = games.FirstOrDefault();
+            foreach(var game in games)
+            {
                 if(game.Artworks != null) {
                     var artworkImageId = game.Artworks.Values.First().ImageId;
                     string imgUrl = ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.HD720, retina: false);
-                    gameModel.ImgUrl = imgUrl;
+                    GameModel gameModel = new() {
+                        ImgUrl = imgUrl,
+                        GameID = game.Id.ToString(),
+                        GameName = game.Name,
+                        Description = game.Summary,
+                        Rating = game.Rating
+                    };
+                    gamesList.Add(gameModel);
                 }
-                else{
-                    gameModel.ImgUrl = defaultImgUrl;
-                }
-
-                gameModel.GameID = game.Id.ToString();
-                gameModel.GameName = game.Name;
-                gameModel.Description = game.Summary;
-                gameModel.Rating = game.Rating;
-            } //else gameModel = null
-        return gameModel;
+            }
+            return gamesList;
         }
     }
 }

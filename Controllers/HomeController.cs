@@ -36,8 +36,8 @@ public class HomeController : Controller
     public async Task<IActionResult> Index([FromForm]string gameName) {
         if(gameName != null)
         {
-            GameModel game = await _igdbRepo.SearchForGameAsync(gameName);
-            ViewData["Game"] = game;
+            IEnumerable<GameModel> games = await _igdbRepo.SearchForGameAsync(gameName);
+            ViewData["Games"] = games; //viewdata should be changed
             return View();
         }
         else {
@@ -97,7 +97,7 @@ public class HomeController : Controller
         return user.ReturnAsDTO();
     }
 
-    public async Task<ActionResult> AddGameAsync(string gameId, string gameName, string rating, string description, string imageUrl)
+    public async Task<ActionResult> AddGame(string gameId, string gameName, string rating, string description, string imageUrl)
     {
         //check if the user is logged in
         if(_signInManager.IsSignedIn(User))
